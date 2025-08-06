@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Bio-data</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="login-page" class="page">
+        <h2>Login</h2>
+        <div class="input-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" autocomplete="off">
+        </div>
+        <button id="login-button">Login</button>
+        <p id="login-message" class="error-message"></p>
+    </div>
+
+    <div id="bio-data-page" class="page hidden">
+        <h2>Bio-data / Profile</h2>
+        <form id="bio-data-form">
+            <table>
+                <tr>
+                    <td><label for="name">Name:</label></td>
+                    <td><input type="text" id="name" required></td>
+                </tr>
+                <tr>
+                    <td><label for="email">Email:</label></td>
+                    <td><input type="email" id="email" required></td>
+                </tr>
+                <tr>
+                    <td><label for="phone">Phone:</label></td>
+                    <td><input type="tel" id="phone"></td>
+                </tr>
+                <tr>
+                    <td><label for="address">Address:</label></td>
+                    <td><textarea id="address" rows="3"></textarea></td>
+                </tr>
+                <tr>
+                    <td><label for="dob">Date of Birth:</label></td>
+                    <td><input type="date" id="dob"></td>
+                </tr>
+                <tr>
+                    <td><label for="gender">Gender:</label></td>
+                    <td>
+                        <select id="gender">
+                            <option value="">Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <button type="submit" id="submit-bio-data">Submit</button>
+            <button type="button" id="back-to-login">Back to Login</button>
+        </form>
+        <p id="save-message" class="success-message"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.page {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.page.hidden {
+    display: none;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.input-group input[type="text"],
+.input-group input[type="password"],
+#bio-data-form input[type="text"],
+#bio-data-form input[type="email"],
+#bio-data-form input[type="tel"],
+#bio-data-form input[type="date"],
+#bio-data-form textarea,
+#bio-data-form select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#login-button {
+    margin-top: 20px;
+}
+
+#bio-data-page {
+    max-width: 600px;
+}
+
+#bio-data-form table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#bio-data-form table td {
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+#bio-data-form table td:first-child {
+    width: 30%;
+    font-weight: bold;
+    color: #555;
+}
+
+#bio-data-form button {
+    margin-right: 10px;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.success-message {
+    color: green;
+    margin-top: 10px;
+}
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const loginPage = document.getElementById('login-page');
+    const bioDataPage = document.getElementById('bio-data-page');
+    const loginButton = document.getElementById('login-button');
+    const backToLoginButton = document.getElementById('back-to-login');
+    const submitBioDataButton = document.getElementById('submit-bio-data');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const loginMessage = document.getElementById('login-message');
+    const saveMessage = document.getElementById('save-message');
+    const bioDataForm = document.getElementById('bio-data-form');
+
+    // Unique login credentials
+    const users = {
+        'user1': 'pass1',
+        'admin': 'admin123',
+        'guest': 'welcome'
+    };
+
+    let loggedInUser = null; // To keep track of the currently logged-in user
+
+    // Function to show a page
+    function showPage(pageElement) {
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.add('hidden');
+        });
+        pageElement.classList.remove('hidden');
+    }
+
+    // Function to save bio-data to localStorage
+    function saveBioData() {
+        if (loggedInUser) {
+            const bioData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                dob: document.getElementById('dob').value,
+                gender: document.getElementById('gender').value
+            };
+            localStorage.setItem(`bioData_${loggedInUser}`, JSON.stringify(bioData));
+            saveMessage.textContent = 'Information saved successfully!';
+            setTimeout(() => saveMessage.textContent = '', 3000); // Clear message after 3 seconds
+        }
+    }
+    
+    // Function to load bio-data from localStorage
+    function loadBioData() {
+        if (loggedInUser) {
+            const savedData = localStorage.getItem(`bioData_${loggedInUser}`);
+            if (savedData) {
+                const bioData = JSON.parse(savedData);
+                document.getElementById('name').value = bioData.name || '';
+                document.getElementById('email').value = bioData.email || '';
+                document.getElementById('phone').value = bioData.phone || '';
+                document.getElementById('address').value = bioData.address || '';
+                document.getElementById('dob').value = bioData.dob || '';
+                document.getElementById('gender').value = bioData.gender || '';
+            } else {
+                // Clear the form if no saved data for the user
+                bioDataForm.reset();
+            }
+        }
+    }
+
+    // Login button click handler
+    loginButton.addEventListener('click', () => {
+        const username = usernameInput.value;
+        const password = passwordInput.value;
+
+        if (users[username] && users[username] === password) {
+            loggedInUser = username;
+            loginMessage.textContent = '';
+            showPage(bioDataPage);
+            loadBioData(); // Load bio-data for the logged-in user
+        } else {
+            loginMessage.textContent = 'Invalid username or password.';
+        }
+    });
+
+    // Back to Login button click handler
+    backToLoginButton.addEventListener('click', () => {
+        saveBioData(); // Save current bio-data before going back
+        showPage(loginPage);
+        usernameInput.value = ''; // Clear username
+        passwordInput.value = ''; // Clear password
+        loginMessage.textContent = ''; // Clear any previous login messages
+        loggedInUser = null; // Clear the logged-in user
+    });
+
+    // Submit Bio-data button click handler
+    bioDataForm.addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent default form submission
+        saveBioData();
+    });
+
+    // Initialize by showing the login page
+    showPage(loginPage);
+});
+</script>
+</body>
+</html>

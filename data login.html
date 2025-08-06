@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            flex-direction: column;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group input[type="submit"],
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .form-group input[type="submit"]:hover,
+        button:hover {
+            background-color: #0056b3;
+        }
+        #login-page {
+            display: block; /* Show login page by default */
+        }
+        #biodata-page {
+            display: none; /* Hide biodata page by default */
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-page" class="container">
+        <h2>Login</h2>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <button onclick="login()">Login</button>
+        </div>
+        <p id="login-error" class="error-message"></p>
+    </div>
+
+    <div id="biodata-page" class="container">
+        <h2>Enter Your Biodata/Profile</h2>
+        <form id="biodata-form">
+            <table>
+                <tr>
+                    <td><label for="fullName">Full Name:</label></td>
+                    <td><input type="text" id="fullName" name="fullName" required></td>
+                </tr>
+                <tr>
+                    <td><label for="email">Email:</label></td>
+                    <td><input type="email" id="email" name="email" required></td>
+                </tr>
+                <tr>
+                    <td><label for="phone">Phone Number:</label></td>
+                    <td><input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="e.g., 1234567890" required></td>
+                </tr>
+                <tr>
+                    <td><label for="address">Address:</label></td>
+                    <td><input type="text" id="address" name="address" required></td>
+                </tr>
+                <tr>
+                    <td><label for="dob">Date of Birth:</label></td>
+                    <td><input type="date" id="dob" name="dob" required></td>
+                </tr>
+                <tr>
+                    <td><label for="occupation">Occupation:</label></td>
+                    <td><input type="text" id="occupation" name="occupation"></td>
+                </tr>
+                <tr>
+                    <td><label for="education">Education:</label></td>
+                    <td><input type="text" id="education" name="education"></td>
+                </tr>
+                <tr>
+                    <td><label for="skills">Skills:</label></td>
+                    <td><input type="text" id="skills" name="skills" placeholder="Comma-separated"></td>
+                </tr>
+            </table>
+            <div class="form-group" style="margin-top: 20px;">
+                <input type="submit" value="Submit Biodata">
+            </div>
+        </form>
+        <p id="biodata-message" class="error-message"></p>
+    </div>
+
+    <script>
+        // Define unique login credentials
+        const users = {
+            "user1": "pass1",
+            "user2": "pass2",
+            "admin": "admin123"
+        };
+
+        function login() {
+            const usernameInput = document.getElementById("username").value;
+            const passwordInput = document.getElementById("password").value;
+            const loginError = document.getElementById("login-error");
+
+            if (users[usernameInput] && users[usernameInput] === passwordInput) {
+                // Successful login
+                document.getElementById("login-page").style.display = "none";
+                document.getElementById("biodata-page").style.display = "block";
+                loginError.textContent = ""; // Clear any previous error
+            } else {
+                loginError.textContent = "Invalid username or password.";
+            }
+        }
+
+        document.getElementById("biodata-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const formData = new FormData(event.target);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            // Simulate saving data (in a real application, you'd send this to a server)
+            console.log("Biodata submitted:", data);
+
+            // Display a message to the user
+            const biodataMessage = document.getElementById("biodata-message");
+            biodataMessage.style.color = "green";
+            biodataMessage.textContent = "Biodata submitted successfully! (This data would typically be saved to a server/database)";
+
+            // In a real application, you'd send this 'data' object to your server-side script
+            // Example of how you might send data (this won't work without a backend):
+            /*
+            fetch('/save-biodata', { // Replace with your actual server endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Success:', result);
+                biodataMessage.style.color = "green";
+                biodataMessage.textContent = "Biodata submitted successfully!";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                biodataMessage.style.color = "red";
+                biodataMessage.textContent = "Error submitting biodata. Please try again.";
+            });
+            */
+        });
+    </script>
+
+</body>
+</html>
